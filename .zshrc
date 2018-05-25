@@ -13,7 +13,7 @@ zplug load # --verbose # でプラグインのロードを教えてくれる
 
 # for peco
 function peco-history-selection() {
-    BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+    BUFFER=`history -n -1000 | peco`
     CURSOR=$#BUFFER
     zle reset-prompt
 }
