@@ -21,7 +21,11 @@ zle -N peco-history-selection
 bindkey '^R' peco-history-selection
 
 # prompt
-PROMPT="%K{233}%F{028}[%D{%m/%d %T}]%k%f %F{033}%K{233}[%n@%m]%f%k %K{233}%F{098}%~%f%k %K{233}%F{052} %# %f%k "
+precmd() {
+    GIT_CURRENT_BRANCH=`git branch --contains | perl -E 'chomp(my $s = <>); print substr($s, 2)'`
+    GIT_PARENT_BRANCH=`git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}'`
+    PROMPT="%K{233}%F{028}[%D{%m/%d %T}]%k%f %F{033}%K{233}[%n@%m]%f%k %K{233}%F{098}%~%f%k %K{233}%F{220}($GIT_PARENT_BRANCH)%f%k -> %K{233}%F{198}($GIT_CURRENT_BRANCH)%f%k %K{233}%F{202}%#%f%k "
+}
 
 # history
 export HISTFILE=${HOME}/.zsh_history
