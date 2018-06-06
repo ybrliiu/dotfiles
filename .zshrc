@@ -13,24 +13,28 @@ zplug load # --verbose # でプラグインのロードを教えてくれる
 
 # for peco
 function peco-history-selection() {
-    BUFFER=`history -n -1000 | perl -e 'print reverse <>' | peco`
-    CURSOR=$#BUFFER
-    zle reset-prompt
+  BUFFER=`history -n -1000 | perl -e 'print reverse <>' | peco`
+  CURSOR=$#BUFFER
+  zle reset-prompt
 }
 zle -N peco-history-selection
 bindkey '^R' peco-history-selection
 
 function liiu_git_current_branch() {
-    echo `git branch --contains 2> /dev/null | perl -E 'chomp(my $s = <>); print substr($s, 2)'`
+  echo `git branch --contains 2> /dev/null | perl -E 'chomp(my $s = <>); print substr($s, 2)'`
 }
 
 function liiu_git_parent_branch() {
-    echo `git show-branch 2> /dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)" | head -1 | awk -F'[]~^[]' '{print $2}'`
+  echo `git show-branch 2> /dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)" | head -1 | awk -F'[]~^[]' '{print $2}'`
 }
 
 # prompt
+_LIIU_PROMPT_CACHE=`pwd`
 precmd() {
-  PROMPT="%K{233}%F{028}%D{%m/%d %T}%k%f %F{033}%K{233}【%n@%m】%f%k %K{233}%F{098}%~%f%k %K{233}%F{220}($(liiu_git_parent_branch))%f%k ~~> %K{233}%F{198}($(liiu_git_current_branch))%f%k %K{233}%F{202}%#%f%k "
+  if [ $_LIIU_PROMPT_CACHE != `pwd` ]; then
+    _LIIU_PROMPT_CACHE=`pwd`
+    PROMPT="%K{233}%F{028}%D{%m/%d %T}%k%f %F{033}%K{233}【%n@%m】%f%k %K{233}%F{098}%~%f%k %K{233}%F{220}($(liiu_git_parent_branch))%f%k ~~> %K{233}%F{198}($(liiu_git_current_branch))%f%k %K{233}%F{202}%#%f%k "
+  fi
 }
 
 # history
