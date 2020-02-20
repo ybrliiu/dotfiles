@@ -46,15 +46,12 @@ function peco-history-selection() {
 zle -N peco-history-selection
 bindkey '^R' peco-history-selection
 
-function liiu_git_current_branch() {
-  echo `git branch --contains | grep "* " | perl -ple 's/\* //g'`
+# prompt
+precmd() {
+  local current_branch=`git branch --contains 2> /dev/null | grep "* " | perl -ple 's/\* //g'`
+  local parent_branch=`git show-branch 2> /dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)" | head -1 | awk -F'[]~^[]' '{print $2}'`
+  PROMPT="%K{233}%F{028}%D{%m/%d %T}%k%f %F{033}%K{233}【%n@%m】%f%k %K{233}%F{098}%~%f%k %K{233}%F{220}($parent_branch)%f%k => %K{233}%F{198}($current_branch)%f%k %K{233}%F{202}%#%f%k "
 }
-
-function liiu_git_parent_branch() {
-  echo `git show-branch 2> /dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD 2> /dev/null)" | head -1 | awk -F'[]~^[]' '{print $2}'`
-}
-
-PROMPT="%K{233}%F{028}%D{%m/%d %T}%k%f %F{033}%K{233}【%n@%m】%f%k %K{233}%F{098}%~%f%k %K{233}%F{220}($(liiu_git_parent_branch))%f%k ~~> %K{233}%F{198}($(liiu_git_current_branch))%f%k %K{233}%F{202}%#%f%k "
 
 # history
 export HISTFILE=${HOME}/.zsh_history
@@ -141,4 +138,3 @@ load-nvmrc() {
 }
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
-
