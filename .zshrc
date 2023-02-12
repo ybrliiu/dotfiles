@@ -68,73 +68,33 @@ export PATH="$HOME/local/bin:$PATH"
 # alias
 alias ls=exa
 
-# Perl5
-export PATH="$HOME/.plenv/bin:$PATH"
-eval "$(plenv init -)"
-
-# Perl6
-export PATH="$HOME/.p6env/bin:$PATH"
-eval "$(p6env init -)"
-
-# Ruby
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-
-# Python
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
+# anyenv
+if [ ! -d "$HOME/.anyenv" ]; then
+	echo "install anyenv..."
+	git clone https://github.com/anyenv/anyenv "$HOME/.anyenv" 
+        export PATH="$HOME/.anyenv/bin:$PATH"
+	anyenv init
+	anyenv install --init
+	for env in plenv rbenv pyenv nodenv crenv goenv
+	do
+		anyenv install $env
+	done
 fi
 
+export PATH="$HOME/.anyenv/bin:$PATH"
+eval "$(anyenv init -)"
+
+# rakuenv
+if [ ! -d "$HOME/.rakuenv" ]; then
+	git clone https://github.com/skaji/rakuenv ~/.rakuenv
+fi
+
+export PATH="$HOME/.rakuenv/bin:$PATH"
+eval "$(rakuenv init -)"
+
 # Rust
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Crystal
-export PATH="$HOME/.crenv/bin:$PATH"
-eval "$(crenv init -)"
-export CRYSTAL_DIR="$HOME/.crystal"
-export PATH="$CRYSTAL_DIR/bin:$PATH"
-
-# Haskell (stack)
-export PATH="$HOME/.local/bin:$PATH"
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
-eval "$(stack --bash-completion-script stack)"
-
-# Golang
-export GOENV_ROOT="$HOME/.goenv"
-export PATH="$GOENV_ROOT/bin:$PATH"
-export GOPATH="$HOME/.go"
-export PATH="$GOPATH/bin:$PATH"
-eval "$(goenv init -)"
-
-# Node.js
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+source "$HOME/.cargo/env"
 
 # deno
 export PATH="$HOME/.deno/bin:$PATH"
 
-# copy from https://github.com/creationix/nvm/Readme.md
-# place this after nvm initialization!
-autoload -U add-zsh-hook
-load-nvmrc() {
-  local node_version="$(nvm version)"
-  local nvmrc_path="$(nvm_find_nvmrc)"
-
-  if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-    if [ "$nvmrc_node_version" = "N/A" ]; then
-      nvm install
-    elif [ "$nvmrc_node_version" != "$node_version" ]; then
-      nvm use
-    fi
-  elif [ "$node_version" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
-  fi
-}
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
