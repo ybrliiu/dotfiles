@@ -31,7 +31,7 @@ source ~/.zplug/init.zsh
 zplug "zsh-users/zsh-completions"              # 補完強化
 zplug "zsh-users/zsh-history-substring-search" # コマンド入力中に上キーや下キーを押した際の履歴の検索を使いやすくする
 zplug "zsh-users/zsh-syntax-highlighting"      # コマンドが間違っているときとか赤色で教えてくれる
-zplug "peco/peco", as:command, from:gh-r       # ctrl + r の強化版みたいな
+zplug "peco/peco", as:command, from:github       # ctrl + r の強化版みたいな
 zplug "b4b4r07/enhancd", use:init.sh           # cdコマンド ++
 
 zplug check || zplug install
