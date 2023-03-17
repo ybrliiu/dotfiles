@@ -86,6 +86,7 @@ eval "$(anyenv init -)"
 
 # rakuenv
 if [ ! -d "$HOME/.rakuenv" ]; then
+	echo "install rakuenv..."
 	git clone https://github.com/skaji/rakuenv ~/.rakuenv
 fi
 
@@ -97,4 +98,7 @@ source "$HOME/.cargo/env"
 
 # deno
 export PATH="$HOME/.deno/bin:$PATH"
+
+# direnv
+eval "$(direnv hook zsh)"
 
